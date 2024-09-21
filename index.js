@@ -8,7 +8,7 @@ connectDB()
       throw error;
     });
     app.listen(10000, () => {
-      console.log(`Server is running at PORT : ${process.env.PORT}`);
+      console.log(`Server is running at PORT : 10000`);
       console.log("MongoDb connection SUCCESS");
     });
   })

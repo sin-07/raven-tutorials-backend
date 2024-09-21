@@ -1,0 +1,54 @@
+POST http://localhost:8000/api/register
+Content-Type: multipart/form-data; boundary=---MyBoundary
+
+---MyBoundary
+Content-Disposition: form-data; name="email"
+
+rohit@gmail.com
+---MyBoundary
+Content-Disposition: form-data; name="name"
+
+Rohit
+---MyBoundary
+Content-Disposition: form-data; name="dob"
+
+12/12/2000
+---MyBoundary
+Content-Disposition: form-data; name="schoolname"
+
+Siksha O Anusandhan
+---MyBoundary
+Content-Disposition: form-data; name="standard"
+
+9th
+---MyBoundary
+Content-Disposition: form-data; name="contact"
+
+9708798088
+---MyBoundary
+Content-Disposition: form-data; name="guardianname"
+
+Gurunath
+---MyBoundary
+Content-Disposition: form-data; name="bloodgroup"
+
+O+
+---MyBoundary
+Content-Disposition: form-data; name="address"
+
+Mumbai
+---MyBoundary
+Content-Disposition: form-data; name="pincode"
+
+803233
+---MyBoundary
+Content-Disposition: form-data; name="hobby"
+
+Playing Cricket
+---MyBoundary
+Content-Disposition: form-data; name="profileimage"; filename="testingpic.png"
+Content-Type: image/png
+
+C:\Users\abhay\OneDrive\Pictures\Screenshots\testingpic.png
+
+---MyBoundary--

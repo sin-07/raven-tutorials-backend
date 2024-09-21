@@ -100,25 +100,53 @@ const registerStudent = async (req, res) => {
   return res.status(201).json(new ApiResponse(200, createdStudent, "student"));
 };
 
+// const studentLogin = async (req, res) => {
+//   const { email, password } = req.body;
+//   try {
+//     let user = await LoginStudent.findOne({ email });
+//     if (!user) {
+//       return res.status(400).json({ message: "User does not exists" });
+//     }
+//     const passwordMatch = await bcrypt.compare(password, user.password);
+//     if (!passwordMatch) {
+//       return res.status(400).json({ message: "Invalid credentials" });
+//     }
+//     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+//       expiresIn: "1d",
+//     });
+//     res.cookie("token", token, { httpOnly: true, secure: true });
+//     return res.status(200).json({ message: "Login successful" });
+//   } catch (err) {
+//     console.error(err);
+//     return res.status(500).send("Server error");
+//   }
+// };
 const studentLogin = async (req, res) => {
-  const { email, password } = req.body;
   try {
+    console.log(req.body);
+    const { email, password } = req.body;
+
     let user = await LoginStudent.findOne({ email });
+
     if (!user) {
       return res.status(400).json({ message: "User does not exists" });
     }
     const passwordMatch = await bcrypt.compare(password, user.password);
+
     if (!passwordMatch) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "1d",
     });
-    res.cookie("token", token, { httpOnly: true, secure: true });
-    return res.status(200).json({ message: "Login successful" });
-  } catch (err) {
-    console.error(err.message);
-    return res.status(500).send("Server error");
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: true,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: error.message });
   }
 };
 
@@ -147,7 +175,7 @@ const studentSignup = async (req, res) => {
       user,
     });
   } catch (error) {
-    console.log(error)
+    console.log(error);
     return res.status(500).json({
       message: error.message,
     });

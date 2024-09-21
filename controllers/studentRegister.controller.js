@@ -124,6 +124,7 @@ const studentLogin = async (req, res) => {
 
 const studentSignup = async (req, res) => {
   const { username, email, password } = req.body;
+  console.log(req.body);
   try {
     let user = await LoginStudent.findOne({ email });
     if (user) {
@@ -146,6 +147,7 @@ const studentSignup = async (req, res) => {
       user,
     });
   } catch (error) {
+    console.log(error)
     return res.status(500).json({
       message: error.message,
     });

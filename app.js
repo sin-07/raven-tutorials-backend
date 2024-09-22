@@ -9,7 +9,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: 'https://www.raventutorials.in',
+    origin: '*',
     credentials: true,
   })
 );

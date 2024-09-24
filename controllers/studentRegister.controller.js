@@ -5,7 +5,7 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import "dotenv/config";
+import 'dotenv/config';
 import nodemailer from "nodemailer";
 
 const registerStudent = async (req, res) => {
@@ -128,29 +128,32 @@ const studentLogin = async (req, res) => {
     let user = await LoginStudent.findOne({ email });
 
     if (!user) {
-      return res.status(400).json({ message: "User does not exists" });
+      return res.status(400).json({ message: "User does not exist" });
     }
     const passwordMatch = await bcrypt.compare(password, user.password);
 
     if (!passwordMatch) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
-    // console.log(user);
+
+    console.log(process.env.JWT_SECRET);
+
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "1d",
     });
-    console.log(token)
-
+    
     res.cookie("token", token, {
       httpOnly: true,
       secure: true,
     });
+
     return res.status(200).json({ message: "Login successful", token });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: error.message });
   }
 };
+
 
 const studentSignup = async (req, res) => {
   const { username, email, password } = req.body;
@@ -220,4 +223,4 @@ const forgot = async (req, res) => {
   }
 };
 
-export { registerStudent, studentLogin, studentSignup, forgot };
+export  { registerStudent, studentLogin, studentSignup, forgot };

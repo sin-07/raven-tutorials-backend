@@ -1,126 +1,139 @@
 import { Student } from "../models/student.models.js";
 import LoginStudent from "../models/loginStudent.js";
-import { ApiError } from "../utils/ApiError.js";
-import { ApiResponse } from "../utils/ApiResponse.js";
-import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import 'dotenv/config';
+import "dotenv/config";
 import nodemailer from "nodemailer";
 
 const registerStudent = async (req, res) => {
-  // const response = req.body;
-
-  // let studentData;
-  // try {
-  //   studentData =
-  //     typeof response.studentData === "string"
-  //       ? JSON.parse(response.studentData)
-  //       : response.studentData;
-  //   if (!studentData) {
-  //     throw new ApiError(400, "Student data is missing from the request");
-  //   }
-  // } catch (error) {
-  //   throw new ApiError(400, "Invalid Data");
-  // }
-
   const {
     name,
     email,
-    dob,
-    schoolname,
+    guardianname,
     standard,
+    bloodgroup,
     contact,
     alternatecontact,
-    guardianname,
-    bloodgroup,
     address,
     pincode,
     hobby,
+    dob,
+    schoolname,
+    profile,
+    publicId,
   } = req.body;
-  if (
-    [
+  try {
+    
+    let user = await Student.findOne({ email });
+    if (user) {
+      return res.status(400).json({ message: "Email already exists",email });
+    }
+    user = await Student.create({
       name,
       email,
-      dob,
-      schoolname,
+      guardianname,
       standard,
+      bloodgroup,
       contact,
       alternatecontact,
-      guardianname,
-      bloodgroup,
       address,
       pincode,
       hobby,
-    ].some((field) => field?.trim() === "")
-  ) {
-    throw new ApiError(400, "All fields are required");
+      dob,
+      schoolname,
+      profile,
+      publicId,
+    
+    })
+
+    await user.save();
+    return res.status(200).json({ message: "Student registered successfully" });
+
+    
+    
+    
+  } catch (error) {
+    console.log('Error in register',error)
+    return res.status(500).json({ message: error.message });
   }
-
-  const existedStudent = await Student.findOne({ email });
-
-  if (existedStudent) {
-    throw new ApiError(409, "Student with email already exists");
-  }
-
-  const photo = req.files.profileimage[0];
-  const photoLocalPath = photo.path;
-
-  if (!photoLocalPath) {
-    throw new ApiError(400, "Profile photo local path not found");
-  }
-
-  const profilephoto = await uploadOnCloudinary(photoLocalPath);
-  if (!profilephoto) {
-    throw new ApiError(400, "Profile photo is required");
-  }
-
-  const profileimage = profilephoto.url;
-
-  const student = await Student.create({
-    name,
-    email,
-    dob,
-    schoolname,
-    standard,
-    contact,
-    alternatecontact,
-    guardianname,
-    bloodgroup,
-    address,
-    pincode,
-    hobby,
-    profileimage,
-  });
-
-  const createdStudent = await Student.findById(student._id);
-  if (!createdStudent) {
-    throw new ApiError(500, "Something went wrong while registering");
-  }
-  return res.status(201).json(new ApiResponse(200, createdStudent, "student"));
 };
 
-// const studentLogin = async (req, res) => {
-//   const { email, password } = req.body;
-//   try {
-//     let user = await LoginStudent.findOne({ email });
-//     if (!user) {
-//       return res.status(400).json({ message: "User does not exists" });
-//     }
-//     const passwordMatch = await bcrypt.compare(password, user.password);
-//     if (!passwordMatch) {
-//       return res.status(400).json({ message: "Invalid credentials" });
-//     }
-//     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-//       expiresIn: "1d",
-//     });
-//     res.cookie("token", token, { httpOnly: true, secure: true });
-//     return res.status(200).json({ message: "Login successful" });
-//   } catch (err) {
-//     console.error(err);
-//     return res.status(500).send("Server error");
+//   const {
+//     name,
+//     email,
+//     dob,
+//     schoolname,
+//     standard,
+//     contact,
+//     alternatecontact,
+//     guardianname,
+//     bloodgroup,
+//     address,
+//     pincode,
+//     hobby,
+//   } = req.body;
+//   if (
+//     [
+//       name,
+//       email,
+//       dob,
+//       schoolname,
+//       standard,
+//       contact,
+//       alternatecontact,
+//       guardianname,
+//       bloodgroup,
+//       address,
+//       pincode,
+//       hobby,
+//     ].some((field) => field?.trim() === "")
+//   ) {
+//     throw new ApiError(400, "All fields are required");
 //   }
+
+//   const existedStudent = await Student.findOne({ email });
+
+//   if (existedStudent) {
+//     throw new ApiError(409, "Student with email already exists");
+//   }
+
+//   const photo = req.files.profileimage[0];
+//   const photoLocalPath = photo.path;
+
+//   if (!photoLocalPath) {
+//     throw new ApiError(400, "Profile photo local path not found");
+//   }
+
+//   const profilephoto = await uploadOnCloudinary(photoLocalPath);
+//   if (!profilephoto) {
+//     throw new ApiError(400, "Profile photo is required");
+//   }
+
+//   const profileimage = profilephoto.url;
+
+//   const student = await Student.create({
+//     name,
+//     email,
+//     dob,
+//     schoolname,
+//     standard,
+//     contact,
+//     alternatecontact,
+//     guardianname,
+//     bloodgroup,
+//     address,
+//     pincode,
+//     hobby,
+//     profileimage,
+//   });
+
+//   const createdStudent = await Student.findById(student._id);
+//   if (!createdStudent) {
+//     throw new ApiError(500, "Something went wrong while registering");
+//   }
+//   return res.status(201).json(new ApiResponse(200, createdStudent, "student"));
 // };
+
 const studentLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -141,7 +154,7 @@ const studentLogin = async (req, res) => {
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "1d",
     });
-    
+
     res.cookie("token", token, {
       httpOnly: true,
       secure: true,
@@ -153,7 +166,6 @@ const studentLogin = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
-
 
 const studentSignup = async (req, res) => {
   const { username, email, password } = req.body;
@@ -223,4 +235,4 @@ const forgot = async (req, res) => {
   }
 };
 
-export  { registerStudent, studentLogin, studentSignup, forgot };
+export { registerStudent, studentLogin, studentSignup, forgot };

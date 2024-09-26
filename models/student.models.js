@@ -19,6 +19,7 @@ const studentSchema = new Schema(
     },
     schoolname: {
       type: String,
+      required: true,
     },
     standard: {
       type: String,
@@ -30,6 +31,7 @@ const studentSchema = new Schema(
     },
     alternatecontact: {
       type: String,
+      required: true,
     },
     guardianname: {
       type: String,
@@ -51,8 +53,12 @@ const studentSchema = new Schema(
       type: String,
       required: true,
     },
-    profileimage: {
+    profile: {
       type: String, // cloudinary uri
+      required: true,
+    },
+    publicId: {
+      type: String,
       required: true,
     },
   },

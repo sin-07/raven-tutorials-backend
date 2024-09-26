@@ -4,18 +4,19 @@ import { upload } from "../middlewares/multer.middlewares.js";
 
 const router = express.Router();
 
-router.route("/register").post(
-  upload.fields([
-    {
-      name: "profileimage",
-      maxCount: 1,
-    },
-  ]),
-  registerStudent
-);
+// router.route("/register").post(
+//   upload.fields([
+//     {
+//       name: "profileimage",
+//       maxCount: 1,
+//     },
+//   ]),
+//   registerStudent
+// );
 
 router.post('/login', studentLogin);
 router.post('/signup', studentSignup);
 router.post('/forgot', forgot)
+router.post('/form',registerStudent)
 
 export default router;

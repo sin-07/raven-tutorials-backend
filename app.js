@@ -21,6 +21,6 @@ app.use(express.static("public"));
 app.use(cookieParser());
 
 
-app.use("/", studentRouter);
+app.use("/api", studentRouter);
 
 export default app;

@@ -1,5 +1,5 @@
 import express from "express";
-import { forgot, registerStudent, studentLogin, studentSignup } from "../controllers/studentRegister.controller.js";
+import { forgot, getUsers, registerStudent, studentLogin, studentSignup } from "../controllers/studentRegister.controller.js";
 import { upload } from "../middlewares/multer.middlewares.js";
 
 const router = express.Router();
@@ -18,5 +18,6 @@ router.post('/login', studentLogin);
 router.post('/signup', studentSignup);
 router.post('/forgot', forgot)
 router.post('/form',registerStudent)
+router.get('/getusers',getUsers)
 
 export default router;

@@ -235,4 +235,22 @@ const forgot = async (req, res) => {
   }
 };
 
-export { registerStudent, studentLogin, studentSignup, forgot };
+
+const getUsers = async (req, res) => {
+
+  try {
+    let user = await Student.find();
+    if (!user) {
+      return res.status(400).json({ message: "User does not exist" });
+    }
+    return res.status(200).json({ message: "User fetched successfully", user });
+    
+  } catch (error) {
+    console.log('Error in register',error)
+    return res.status(500).json({ message: error.message });
+  }
+}
+
+
+
+export { registerStudent, studentLogin, studentSignup, forgot,getUsers };

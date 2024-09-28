@@ -23,10 +23,9 @@ const registerStudent = async (req, res) => {
     publicId,
   } = req.body;
   try {
-    
     let user = await Student.findOne({ email });
     if (user) {
-      return res.status(400).json({ message: "Email already exists",email });
+      return res.status(400).json({ message: "Email already exists", email });
     }
     user = await Student.create({
       name,
@@ -43,17 +42,12 @@ const registerStudent = async (req, res) => {
       schoolname,
       profile,
       publicId,
-    
-    })
+    });
 
     await user.save();
     return res.status(200).json({ message: "Student registered successfully" });
-
-    
-    
-    
   } catch (error) {
-    console.log('Error in register',error)
+    console.log("Error in register", error);
     return res.status(500).json({ message: error.message });
   }
 };
@@ -235,22 +229,32 @@ const forgot = async (req, res) => {
   }
 };
 
-
 const getUsers = async (req, res) => {
-
   try {
     let user = await Student.find();
     if (!user) {
       return res.status(400).json({ message: "User does not exist" });
     }
     return res.status(200).json({ message: "User fetched successfully", user });
-    
   } catch (error) {
-    console.log('Error in register',error)
+    console.log("Error in register", error);
     return res.status(500).json({ message: error.message });
   }
-}
+};
 
+const deleteUser = async (req, res) => {
+  try {
+    let user = await Student.findByIdAndDelete(req.params.id);
+    if (!user) {
+      return res.status(400).json({ message: "User does not exist" });
+    } else {
+      return res
+        .status(200)
+        .json({ message: "User deleted successfully", user });
+    }
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
 
-
-export { registerStudent, studentLogin, studentSignup, forgot,getUsers };
+export { registerStudent, studentLogin, studentSignup, forgot, getUsers, deleteUser };
